@@ -89,55 +89,7 @@
     }
 
     /* ══ SLIDE 1 — TITEL ════════════════════════ */
-    #s1 {
-      background: var(--white);
-      flex-direction: column;
-      gap: 0;
-    }
-    .s1-photo {
-      width: min(300px, 65vw);
-      aspect-ratio: 3/4;
-      overflow: hidden;
-      border: 0.5px solid var(--faint);
-      margin-bottom: 2rem;
-      position: relative;
-    }
-    .s1-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center center;
-      filter: grayscale(100%) contrast(1.06);
-      display: block;
-    }
-    .s1-photo-placeholder {
-      width: 100%; height: 100%;
-      background: #e8e5e0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .s1-photo-placeholder i { font-size: 28px; color: var(--muted); }
-    .s1-photo-placeholder span { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
-    .s1-eyebrow {
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-      text-align: center;
-    }
-    .s1-title {
-      font-family: var(--serif);
-      font-size: clamp(28px, 4vw, 48px);
-      font-weight: 400;
-      color: var(--ink);
-      text-align: center;
-      line-height: 1.15;
-    }
-    .s1-title em { font-style: normal; color: var(--red); }
+    #s1 { background: var(--white); }
 
     /* ══ SLIDE 2 — DER TÄTER ════════════════════ */
     #s2 { background: var(--cream); }
@@ -324,26 +276,26 @@
       position: fixed;
       inset: 0;
       z-index: 500;
-      background: #000;
+      background: #0d0c0b;
       cursor: pointer;
-      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     #intro-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 25%;
+      display: block;
+      max-width: 82vw;
+      max-height: 78vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
       filter: grayscale(100%) contrast(1.06);
+      border: 0.5px solid rgba(255,255,255,0.1);
       transition: top 0.7s cubic-bezier(0.4,0,0.2,1),
                   left 0.7s cubic-bezier(0.4,0,0.2,1),
                   width 0.7s cubic-bezier(0.4,0,0.2,1),
                   height 0.7s cubic-bezier(0.4,0,0.2,1),
                   opacity 0.4s ease 0.55s;
-    }
-    #intro-overlay.shrinking #intro-img {
-      position: fixed;
     }
     #intro-overlay.done {
       pointer-events: none;
@@ -391,18 +343,23 @@
 
 <!-- ══ FOLIE I.I ══════════════════════════════════════ -->
 <section class="slide" id="s1" data-slide="1">
-  <div class="s1-photo" id="s1photo">
-    <img src="bild/eins.jpg" alt="Berdytschiw, 28. Juli 1941"
-         onerror="this.parentElement.innerHTML='<div class=\'s1-photo-placeholder\'><i class=\'ti ti-photo\'></i><span>bild.jpg</span></div>'" />
+  <div class="two-col slide-inner" style="max-width:820px">
+    <div>
+      <span class="tag">Folie I.I · KI &amp; Geschichtswissenschaft</span>
+      <h2 class="slide-heading"><em>„Der letzte Jude von Winnyzja"</em></h2>
+      <ul class="bullets">
+        <li>Eine der bekanntesten Bildikonen des Holocausts (datiert zwischen 1941–1943)</li>
+        <li>Bild in <strong>Berdytschiw</strong> entstanden, nicht in Winnyzja</li>
+        <li>Momentaufnahme vor einem Mord an einem unbekannten Juden in der Ukraine</li>
+        <li>Täter wurde <strong>2025</strong> von Jürgen Matthäus identifiziert – u.&thinsp;a. mithilfe von KI</li>
+      </ul>
+    </div>
+    <div class="photo-small" id="s1photo" style="background:#f0ece6;">
+      <img src="bild/eins.jpg" alt="Berdytschiw, 28. Juli 1941"
+           style="object-fit:contain;"
+           onerror="this.parentElement.innerHTML='<div class=\'photo-small-placeholder\'><i class=\'ti ti-photo\'></i></div>'" />
+    </div>
   </div>
-  <div class="s1-eyebrow">Folie I.I &middot; KI &amp; Geschichtswissenschaft</div>
-  <div class="s1-title"><em>„Der letzte Jude von Winnyzja"</em></div>
-  <ul class="bullets" style="margin-top:1.5rem; text-align:left; max-width:min(520px,85vw);">
-    <li>Eine der bekanntesten Bildikonen des Holocausts (datiert zwischen 1941–1943)</li>
-    <li>Bild in <strong>Berdytschiw</strong> entstanden, nicht in Winnyzja</li>
-    <li>Momentaufnahme vor einem Mord an einem unbekannten Juden in der Ukraine</li>
-    <li>Täter wurde <strong>2025</strong> von Jürgen Matthäus identifiziert – u.&thinsp;a. mithilfe von KI</li>
-  </ul>
 </section>
 
 <!-- ══ FOLIE I.II ══════════════════════════════════════ -->
@@ -460,29 +417,29 @@
 
   overlay.addEventListener('click', () => {
     const target = document.getElementById('s1photo');
-    const r = target.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const imgRect    = introImg.getBoundingClientRect();
 
-    // Pin image at current fullscreen position before transitioning
+    // Pin img at its current rendered position
     introImg.style.position = 'fixed';
-    introImg.style.top    = '0px';
-    introImg.style.left   = '0px';
-    introImg.style.width  = window.innerWidth + 'px';
-    introImg.style.height = window.innerHeight + 'px';
-    introImg.style.inset  = 'unset';
+    introImg.style.top    = imgRect.top  + 'px';
+    introImg.style.left   = imgRect.left + 'px';
+    introImg.style.width  = imgRect.width  + 'px';
+    introImg.style.height = imgRect.height + 'px';
+    introImg.style.maxWidth  = 'none';
+    introImg.style.maxHeight = 'none';
 
-    // Force reflow so transition fires
+    // Force reflow
     introImg.getBoundingClientRect();
 
-    // Animate to target position
-    introImg.style.top    = r.top + 'px';
-    introImg.style.left   = r.left + 'px';
-    introImg.style.width  = r.width + 'px';
-    introImg.style.height = r.height + 'px';
+    // Animate to slide-1 photo position
+    introImg.style.top    = targetRect.top    + 'px';
+    introImg.style.left   = targetRect.left   + 'px';
+    introImg.style.width  = targetRect.width  + 'px';
+    introImg.style.height = targetRect.height + 'px';
     introImg.style.opacity = '0';
 
     overlay.classList.add('done');
-
-    // Remove overlay after animation
     setTimeout(() => overlay.remove(), 1100);
   });
 
