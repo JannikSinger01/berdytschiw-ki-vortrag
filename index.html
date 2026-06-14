@@ -319,6 +319,49 @@
     }
     .photo-small-placeholder i { font-size: 24px; color: var(--muted); }
 
+    /* ── INTRO OVERLAY ──────────────────────────── */
+    #intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: #000;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    #intro-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 25%;
+      filter: grayscale(100%) contrast(1.06);
+      transition: top 0.7s cubic-bezier(0.4,0,0.2,1),
+                  left 0.7s cubic-bezier(0.4,0,0.2,1),
+                  width 0.7s cubic-bezier(0.4,0,0.2,1),
+                  height 0.7s cubic-bezier(0.4,0,0.2,1),
+                  opacity 0.4s ease 0.55s;
+    }
+    #intro-overlay.shrinking #intro-img {
+      position: fixed;
+    }
+    #intro-overlay.done {
+      pointer-events: none;
+    }
+    #intro-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.55);
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: fadeUpDown 2s ease-in-out infinite;
+    }
+
     @media (max-width: 600px) {
       .slide { padding: 2rem 1.5rem; }
       .slide:not(:last-child)::after { left: 1.5rem; right: 1.5rem; }
@@ -329,6 +372,15 @@
   </style>
 </head>
 <body>
+
+<!-- Intro Overlay -->
+<div id="intro-overlay">
+  <img src="bild.jpg" id="intro-img" alt="Berdytschiw, 28. Juli 1941" />
+  <div id="intro-hint">
+    <i class="ti ti-hand-click" style="font-size:18px"></i>
+    Klicken zum Starten
+  </div>
+</div>
 
 <!-- Counter -->
 <div class="counter" id="counter">1 / 3</div>
@@ -402,6 +454,39 @@
 </section>
 
 <script>
+  // ── INTRO ANIMATION ──────────────────────────────────
+  const overlay  = document.getElementById('intro-overlay');
+  const introImg = document.getElementById('intro-img');
+
+  overlay.addEventListener('click', () => {
+    const target = document.getElementById('s1photo');
+    const r = target.getBoundingClientRect();
+
+    // Pin image at current fullscreen position before transitioning
+    introImg.style.position = 'fixed';
+    introImg.style.top    = '0px';
+    introImg.style.left   = '0px';
+    introImg.style.width  = window.innerWidth + 'px';
+    introImg.style.height = window.innerHeight + 'px';
+    introImg.style.inset  = 'unset';
+
+    // Force reflow so transition fires
+    introImg.getBoundingClientRect();
+
+    // Animate to target position
+    introImg.style.top    = r.top + 'px';
+    introImg.style.left   = r.left + 'px';
+    introImg.style.width  = r.width + 'px';
+    introImg.style.height = r.height + 'px';
+    introImg.style.opacity = '0';
+
+    overlay.classList.add('done');
+
+    // Remove overlay after animation
+    setTimeout(() => overlay.remove(), 1100);
+  });
+
+  // ── SLIDES ───────────────────────────────────────────
   const slides = document.querySelectorAll('.slide');
   const counter = document.getElementById('counter');
   const hint = document.getElementById('scrollHint');
