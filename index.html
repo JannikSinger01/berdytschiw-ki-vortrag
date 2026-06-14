@@ -6,664 +6,506 @@
   <title>Der Mörder von Berdytschiw</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
   <style>
+    :root {
+      --cream:   #f6f4f0;
+      --white:   #ffffff;
+      --ink:     #1c1916;
+      --muted:   #8a8480;
+      --faint:   #d8d4ce;
+      --red:     #b03020;
+      --green:   #1a6e4a;
+      --serif: Georgia, 'Times New Roman', serif;
+      --sans: 'Helvetica Neue', Arial, sans-serif;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg:      #f5f3ef;
-      --bg2:     #edeae4;
-      --bg3:     #ffffff;
-      --border:  rgba(0,0,0,0.08);
-      --border2: rgba(0,0,0,0.14);
-      --text:    #1a1714;
-      --text2:   #5a5450;
-      --text3:   #9a9490;
-      --accent:  #b03520;
-      --accent2: #8b2010;
-      --green:   #1a7a58;
-      --amber:   #a06010;
-      --blue:    #1a5a9a;
-      --r:       10px;
-      --rsm:     6px;
+    html {
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      scroll-behavior: smooth;
     }
 
-    html, body {
-      height: 100%;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow: hidden;
+    body {
+      font-family: var(--sans);
+      background: var(--cream);
+      color: var(--ink);
     }
 
-    /* ── INTRO SCREEN ──────────────────────────── */
-    #intro {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
+    /* ── SLIDE BASE ─────────────────────────────── */
+    .slide {
+      height: 100vh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: #f5f3ef;
-      cursor: pointer;
-      transition: opacity 0.55s ease;
+      position: relative;
+      padding: 3rem 4rem;
     }
-    #intro.hidden { opacity: 0; pointer-events: none; }
 
-    #intro-img-wrap {
-      width: min(400px, 80vw);
+    /* ── SLIDE COUNTER ──────────────────────────── */
+    .counter {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 2rem;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      z-index: 50;
+      font-family: var(--sans);
+      transition: opacity 0.3s;
+    }
+
+    /* ── SCROLL HINT ────────────────────────────── */
+    .scroll-hint {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      animation: fadeUpDown 2s ease-in-out infinite;
+      transition: opacity 0.5s;
+    }
+    .scroll-hint.hidden { opacity: 0; pointer-events: none; }
+    @keyframes fadeUpDown {
+      0%,100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+      50%      { opacity: 0.9; transform: translateX(-50%) translateY(-3px); }
+    }
+
+    /* ── DIVIDER LINE ───────────────────────────── */
+    .slide:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 4rem; right: 4rem;
+      height: 0.5px;
+      background: var(--faint);
+    }
+
+    /* ══ SLIDE 1 — TITEL ════════════════════════ */
+    #s1 {
+      background: var(--white);
+      flex-direction: column;
+      gap: 0;
+    }
+    .s1-photo {
+      width: min(340px, 70vw);
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      border: 0.5px solid var(--faint);
+      margin-bottom: 2rem;
       position: relative;
     }
-    #intro-img-wrap img {
+    .s1-photo img {
       width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 25%;
+      filter: grayscale(100%) contrast(1.06);
       display: block;
-      filter: grayscale(100%) contrast(1.05);
-      border: 0.5px solid var(--border2);
     }
-    .img-fade {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, transparent 55%, rgba(245,243,239,0.85) 100%);
-      pointer-events: none;
+    .s1-photo-placeholder {
+      width: 100%; height: 100%;
+      background: #e8e5e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 6px;
     }
-
-    #intro-text {
-      margin-top: 1.75rem;
+    .s1-photo-placeholder i { font-size: 28px; color: var(--muted); }
+    .s1-photo-placeholder span { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+    .s1-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
       text-align: center;
     }
-    #intro-eyebrow {
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      color: var(--text3);
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
+    .s1-title {
+      font-family: var(--serif);
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 400;
+      color: var(--ink);
+      text-align: center;
+      line-height: 1.15;
     }
-    #intro-title {
-      font-size: clamp(24px, 4.5vw, 40px);
-      font-weight: 300;
-      color: var(--text);
-      letter-spacing: 0.01em;
-      line-height: 1.2;
-    }
-    #intro-title em { font-style: normal; color: var(--accent); }
-    #intro-hint {
-      margin-top: 2rem;
-      font-size: 11px;
-      color: var(--text3);
-      letter-spacing: 0.1em;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      animation: pulse 2.5s ease-in-out infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:0.35} 50%{opacity:0.85} }
+    .s1-title em { font-style: normal; color: var(--red); }
 
-    /* ── SLIDE LAYOUT ──────────────────────────── */
-    #app {
+    /* ══ SLIDE 2 — DER TÄTER ════════════════════ */
+    #s2 { background: var(--cream); }
+    /* ══ SLIDE 3 — DAS VERBRECHEN ══════════════ */
+    #s3 { background: var(--white); }
+    /* ══ SLIDE 4 — DAS BILD ════════════════════ */
+    #s4 { background: var(--cream); }
+    /* ══ SLIDE 5 — DURCHBRUCH ══════════════════ */
+    #s5 { background: var(--white); }
+    /* ══ SLIDE 6 — KI ══════════════════════════ */
+    #s6 { background: var(--cream); }
+    /* ══ SLIDE 7 — LEITFRAGE ═══════════════════ */
+    #s7 { background: var(--white); }
+
+    /* ── CONTENT LAYOUT ─────────────────────────── */
+    .slide-inner {
+      max-width: 640px;
+      width: 100%;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 0.5px solid var(--faint);
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 1.75rem;
+    }
+
+    .slide-heading {
+      font-family: var(--serif);
+      font-size: clamp(30px, 4.5vw, 52px);
+      font-weight: 400;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 2rem;
+    }
+    .slide-heading em { font-style: normal; color: var(--red); }
+    .slide-heading .yr {
+      font-family: var(--sans);
+      font-size: 0.65em;
+      font-weight: 400;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.2em;
+      letter-spacing: 0.06em;
+    }
+
+    .bullets {
+      list-style: none;
+      padding: 0;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      opacity: 0;
-      transition: opacity 0.45s ease 0.4s;
+      gap: 1rem;
     }
-    #app.visible { opacity: 1; }
-
-    /* Header strip */
-    #header {
+    .bullets li {
+      font-size: clamp(15px, 1.8vw, 19px);
+      color: var(--ink);
+      line-height: 1.45;
       display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 1.5rem;
-      height: 48px;
-      border-bottom: 0.5px solid var(--border2);
-      background: var(--bg3);
-      flex-shrink: 0;
-      opacity: 0;
-      transform: translateY(-6px);
-      transition: opacity 0.4s ease 0.5s, transform 0.4s ease 0.5s;
+      align-items: baseline;
+      gap: 0.75rem;
     }
-    #header.visible { opacity: 1; transform: none; }
-    #header-thumb {
-      width: 28px; height: 28px;
-      overflow: hidden;
-      border: 0.5px solid var(--border2);
+    .bullets li::before {
+      content: '—';
+      color: var(--faint);
       flex-shrink: 0;
+      font-size: 0.9em;
     }
-    #header-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; filter: grayscale(100%); }
-    #header-title {
-      font-size: 13px;
+    .bullets strong { font-weight: 500; }
+    .bullets .num {
+      font-family: var(--serif);
+      font-size: 1.1em;
+      color: var(--red);
       font-weight: 400;
-      color: var(--text);
-      flex: 1;
-    }
-    #header-title span { color: var(--text3); }
-    #slide-counter {
-      font-size: 12px;
-      color: var(--text3);
-      letter-spacing: 0.05em;
     }
 
-    /* Tab bar */
-    #nav-tabs {
-      display: flex;
-      border-bottom: 0.5px solid var(--border2);
-      padding: 0 1.5rem;
-      background: var(--bg3);
-      flex-shrink: 0;
+    /* ── QUOTE ───────────────────────────────────── */
+    .pull-quote {
+      border-left: 2px solid var(--red);
+      padding: 0.6rem 1.1rem;
+      margin-top: 2rem;
     }
-    .tab-btn {
-      padding: 0.7rem 1rem;
-      font-size: 13px;
-      color: var(--text3);
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      cursor: pointer;
-      margin-bottom: -0.5px;
-      transition: color 0.15s;
-      display: flex;
-      align-items: center;
-      gap: 5px;
+    .pull-quote p {
+      font-family: var(--serif);
+      font-size: clamp(13px, 1.5vw, 16px);
+      color: var(--muted);
+      line-height: 1.7;
+      font-style: italic;
     }
-    .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); }
-    .tab-btn:hover:not(.active) { color: var(--text); }
-
-    /* Slide area — scrollable */
-    #slide-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 2.5rem 2rem 2rem;
-    }
-
-    .section { display: none; }
-    .section.active { display: block; }
-
-    /* ── SLIDE TYPOGRAPHY ──────────────────────── */
-    .slide-title {
-      font-size: 22px;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 0.2rem;
-    }
-    .slide-sub {
-      font-size: 13px;
-      color: var(--text3);
-      margin-bottom: 2rem;
+    .pull-quote cite {
+      display: block;
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 6px;
+      font-style: normal;
       letter-spacing: 0.04em;
     }
 
-    /* ── TIMELINE (bullet style) ───────────────── */
-    .tl { position: relative; padding-left: 1.75rem; }
-    .tl::before {
-      content:''; position:absolute;
-      left:6px; top:6px; bottom:6px;
-      width:1px; background:var(--border2);
+    /* ── KI METHODEN GRID ────────────────────────── */
+    .ki-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--faint);
+      border: 0.5px solid var(--faint);
+      margin-top: 1.5rem;
     }
-    .tl-item {
-      position: relative;
+    .ki-cell {
+      background: var(--cream);
+      padding: 1.25rem 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .ki-cell i { font-size: 18px; color: var(--muted); flex-shrink: 0; margin-top: 2px; }
+    .ki-cell-label { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+    .ki-cell-sub { font-size: 12px; color: var(--muted); }
+
+    .big-stat {
+      font-family: var(--serif);
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: 400;
+      color: var(--red);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .big-stat-label {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    /* ── LEITFRAGE ───────────────────────────────── */
+    .leitfrage-q {
+      font-family: var(--serif);
+      font-size: clamp(20px, 3vw, 32px);
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.4;
       margin-bottom: 1.5rem;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.35s, transform 0.35s;
     }
-    .tl-item.vis { opacity:1; transform:none; }
-    .tl-dot {
-      position:absolute; left:-1.75rem; top:5px;
-      width:12px; height:12px; border-radius:50%;
-      background: var(--accent);
-      border:2px solid var(--bg); box-shadow:0 0 0 1px var(--accent);
-    }
-    .tl-dot.gray  { background:var(--text3); box-shadow:0 0 0 1px var(--text3); }
-    .tl-dot.green { background:var(--green); box-shadow:0 0 0 1px var(--green); }
-    .tl-year {
-      font-size:11px; font-weight:500;
-      letter-spacing:0.1em; color:var(--text3);
-      margin-bottom:2px;
-    }
-    .tl-label {
-      font-size:15px; font-weight:500;
-      color:var(--text); margin-bottom:4px;
-    }
-    .tl-bullets {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .tl-bullets li {
-      font-size:13px; color:var(--text2);
-      line-height:1.6;
-      padding-left:14px;
-      position:relative;
-      margin-bottom:2px;
-    }
-    .tl-bullets li::before {
-      content:'–';
-      position:absolute; left:0;
-      color:var(--text3);
-    }
-    .tl-bullets strong { font-weight:500; color:var(--text); }
-
-    /* Quote */
-    .quote-block {
-      border-left:2px solid var(--accent);
-      padding:0.75rem 1rem;
-      margin:1.5rem 0;
-      background:var(--bg2);
-      border-radius:0 var(--rsm) var(--rsm) 0;
-    }
-    .quote-block p {
-      font-size:13px; color:var(--text2);
-      line-height:1.75; font-style:italic;
-    }
-    .quote-src { font-size:11px; color:var(--text3); margin-top:6px; font-style:normal; letter-spacing:0.04em; }
-
-    /* ── KI SECTION ────────────────────────────── */
-    .stat-row {
-      display:grid; grid-template-columns:repeat(3,1fr);
-      gap:10px; margin-bottom:1.75rem;
-    }
-    .stat-box {
-      background:var(--bg3);
-      border:0.5px solid var(--border2);
-      border-radius:var(--rsm);
-      padding:1rem; text-align:center;
-    }
-    .stat-num { font-size:22px; font-weight:400; color:var(--text); }
-    .stat-lbl { font-size:11px; color:var(--text3); margin-top:3px; line-height:1.4; }
-
-    .method-grid {
-      display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-      gap:10px; margin-bottom:1.5rem;
-    }
-    .method-card {
-      background:var(--bg3);
-      border:0.5px solid var(--border2);
-      border-radius:var(--r);
-      padding:1rem;
-      opacity:0; transform:translateY(8px);
-      transition:opacity 0.35s, transform 0.35s;
-    }
-    .method-card.vis { opacity:1; transform:none; }
-    .method-icon { font-size:18px; color:var(--text3); margin-bottom:6px; }
-    .method-title { font-size:13px; font-weight:500; color:var(--text); margin-bottom:4px; }
-    .method-list { list-style:none; padding:0; }
-    .method-list li {
-      font-size:12px; color:var(--text2);
-      line-height:1.55; padding-left:12px; position:relative; margin-bottom:1px;
-    }
-    .method-list li::before { content:'–'; position:absolute; left:0; color:var(--text3); }
-
-    .actor-row { display:flex; flex-wrap:wrap; gap:7px; margin:1rem 0; }
-    .actor-badge {
-      display:inline-flex; align-items:center; gap:5px;
-      padding:4px 10px; border-radius:999px;
-      font-size:12px; color:var(--text2);
-      background:var(--bg2); border:0.5px solid var(--border2);
+    .leitfrage-q em { font-style: italic; color: var(--red); }
+    .leitfrage-sub {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
-    /* ── REFLECTION ────────────────────────────── */
-    .reflect-grid {
-      display:grid; grid-template-columns:1fr 1fr;
-      gap:10px; margin-bottom:1.25rem;
+    /* ── TWO-COL LAYOUT ─────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
     }
-    .reflect-card {
-      background:var(--bg3);
-      border:0.5px solid var(--border2);
-      border-radius:var(--r);
-      padding:1rem 1.1rem;
+    .photo-small {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      border: 0.5px solid var(--faint);
     }
-    .reflect-q {
-      font-size:13px; font-weight:500; color:var(--text);
-      margin-bottom:6px; display:flex; align-items:center; gap:7px;
+    .photo-small img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      filter: grayscale(100%) contrast(1.06);
+      display: block;
     }
-    .reflect-q i { font-size:14px; flex-shrink:0; }
-    .reflect-list { list-style:none; padding:0; }
-    .reflect-list li {
-      font-size:12px; color:var(--text2);
-      line-height:1.6; padding-left:13px; position:relative; margin-bottom:2px;
+    .photo-small-placeholder {
+      width: 100%; height: 100%;
+      background: #e8e5e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .reflect-list li::before { content:'–'; position:absolute; left:0; color:var(--text3); }
-    .icon-green { color:#1a7a58; }
-    .icon-amber { color:#a06010; }
-    .icon-blue  { color:#1a5a9a; }
+    .photo-small-placeholder i { font-size: 24px; color: var(--muted); }
 
-    .leitfrage {
-      margin-top:1.25rem; padding:1.1rem 1.25rem;
-      background:var(--bg2); border:0.5px solid var(--border2);
-      border-radius:var(--r); text-align:center;
+    @media (max-width: 600px) {
+      .slide { padding: 2rem 1.5rem; }
+      .slide:not(:last-child)::after { left: 1.5rem; right: 1.5rem; }
+      .two-col { grid-template-columns: 1fr; gap: 1.5rem; }
+      .photo-small { aspect-ratio: 4/3; }
+      .ki-grid { grid-template-columns: 1fr; }
     }
-    .leitfrage-label { font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--text3); margin-bottom:6px; }
-    .leitfrage p { font-size:14px; font-weight:400; color:var(--text); line-height:1.65; font-style:italic; }
-
-    /* ── FOOTER ────────────────────────────────── */
-    #footer {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:0.6rem 1.5rem;
-      border-top:0.5px solid var(--border2);
-      background:var(--bg3);
-      flex-shrink:0;
-    }
-    #footer button {
-      background:none; border:0.5px solid var(--border2);
-      color:var(--text2); padding:5px 14px;
-      border-radius:var(--rsm); font-size:12px;
-      cursor:pointer; display:flex; align-items:center; gap:4px;
-      transition:background 0.15s, color 0.15s;
-    }
-    #footer button:hover { background:var(--bg2); color:var(--text); }
-    .dots { display:flex; gap:6px; align-items:center; }
-    .dot {
-      width:6px; height:6px; border-radius:50%;
-      background:var(--border2); cursor:pointer;
-      transition:background 0.2s, transform 0.2s;
-    }
-    .dot.active { background:var(--accent); transform:scale(1.35); }
   </style>
 </head>
 <body>
 
-<!-- INTRO -->
-<div id="intro" onclick="dismissIntro()">
-  <div id="intro-img-wrap">
-    <img id="intro-img" src="bild.jpg" alt="Historisches Foto: Berdytschiw, 28. Juli 1941" />
-    <div class="img-fade"></div>
-  </div>
-  <div id="intro-text">
-    <div id="intro-eyebrow">Berdytschiw &middot; 28. Juli 1941</div>
-    <div id="intro-title">Der Mörder von <em>Berdytschiw</em></div>
-  </div>
-  <div id="intro-hint"><i class="ti ti-hand-click"></i> Klicken um fortzufahren</div>
+<!-- Counter -->
+<div class="counter" id="counter">1 / 7</div>
+<!-- Scroll hint -->
+<div class="scroll-hint" id="scrollHint">
+  <i class="ti ti-arrow-down" style="font-size:13px"></i> scrollen
 </div>
 
-<!-- APP -->
-<div id="app">
-  <div id="header">
-    <div id="header-thumb"><img src="bild.jpg" alt="" aria-hidden="true" /></div>
-    <div id="header-title">Der Mörder von Berdytschiw &nbsp;<span>KI &amp; Geschichtswissenschaft</span></div>
-    <div id="slide-counter">1 / 3</div>
+<!-- ══ SLIDE 1 ══════════════════════════════════════ -->
+<section class="slide" id="s1" data-slide="1">
+  <div class="s1-photo" id="s1photo">
+    <img src="bild.jpg" alt="Berdytschiw, 28. Juli 1941"
+         onerror="this.parentElement.innerHTML='<div class=\'s1-photo-placeholder\'><i class=\'ti ti-photo\'></i><span>bild.jpg</span></div>'" />
   </div>
+  <div class="s1-eyebrow">Berdytschiw &middot; 28. Juli 1941</div>
+  <div class="s1-title">Der Mörder von <em>Berdytschiw</em></div>
+</section>
 
-  <div id="nav-tabs">
-    <button class="tab-btn active" onclick="showTab(0)" id="tab0"><i class="ti ti-clock-history"></i> Chronologie</button>
-    <button class="tab-btn" onclick="showTab(1)" id="tab1"><i class="ti ti-cpu"></i> KI-Methoden</button>
-    <button class="tab-btn" onclick="showTab(2)" id="tab2"><i class="ti ti-bulb"></i> Bedeutung</button>
+<!-- ══ SLIDE 2 ══════════════════════════════════════ -->
+<section class="slide" id="s2" data-slide="2">
+  <div class="slide-inner">
+    <span class="tag">Der Täter</span>
+    <h2 class="slide-heading">
+      <span class="yr">1906 – 1943</span>
+      Jakobus Onnen
+    </h2>
+    <ul class="bullets">
+      <li>Ostfriesland — Lehramt — Göttingen</li>
+      <li>SA <strong>1931</strong> · SS <strong>1932</strong> — vor Machtergreifung</li>
+      <li><strong>Einsatzgruppe C</strong> · Ukraine ab Juni 1941</li>
+    </ul>
   </div>
+</section>
 
-  <div id="slide-area">
-
-    <!-- TAB 0 -->
-    <div id="sec0" class="section active">
-      <div class="slide-title">Jakobus Onnen — Biographie eines Täters</div>
-      <div class="slide-sub">CHRONOLOGIE · 1906–2024</div>
-      <div class="tl" id="timeline">
-
-        <div class="tl-item">
-          <div class="tl-dot gray"></div>
-          <div class="tl-year">1906</div>
-          <div class="tl-label">Geburt und Sozialisation</div>
-          <ul class="tl-bullets">
-            <li>Geboren in <strong>Tichelwarf, Ostfriesland</strong></li>
-            <li>Mittelschichtsfamilie, Studium auf Lehramt in Göttingen</li>
-            <li>Prägung durch <strong>nationalsozialistische Ideologie</strong> während des Studiums</li>
-          </ul>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot gray"></div>
-          <div class="tl-year">1931–1934</div>
-          <div class="tl-label">Eintritt in SA und SS</div>
-          <ul class="tl-bullets">
-            <li>SA-Beitritt <strong>vor</strong> Hitlers Machtübernahme (1931)</li>
-            <li>SS-Beitritt 1932/1934</li>
-            <li>Unterrichtet an der Deutschen Kolonialschule in Witzenhausen</li>
-          </ul>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="tl-year">Juni 1941</div>
-          <div class="tl-label">Einsatz Ukraine — Einsatzgruppe C</div>
-          <ul class="tl-bullets">
-            <li>Mobile Tötungseinheit hinter der Ostfront</li>
-            <li>Bis Frühjahr 1942: <strong>über 100.000 ermordete Zivilisten</strong> (überwiegend Juden)</li>
-            <li>Onnen begeht spätestens jetzt seinen ersten Mord</li>
-          </ul>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="tl-year">28. Juli 1941</div>
-          <div class="tl-label">Massaker in der Zitadelle von Berdytschiw</div>
-          <ul class="tl-bullets">
-            <li><strong>70 Juden und ein „Arier"</strong> erschossen</li>
-            <li>Ein Foto hält eine einzelne Erschießung fest</li>
-            <li>Namen der Opfer bewusst <strong>nicht dokumentiert</strong></li>
-          </ul>
-        </div>
-
-        <div class="quote-block">
-          <p>Onnen stand hinter ihm — die Pistole in der Hand, der linke Arm lässig herabhängend. Mit erschreckender <strong>performativer Indifferenz</strong> gab er dem Opfer einen Schuss in den unteren Hinterkopf.</p>
-          <div class="quote-src">— Kriegstagebuch Walter Materna (österreichischer Soldat, Augenzeuge)</div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot gray"></div>
-          <div class="tl-year">August 1943</div>
-          <div class="tl-label">Tod im Krieg</div>
-          <ul class="tl-bullets">
-            <li>Onnen fällt — entzieht sich jeder strafrechtlichen Verfolgung</li>
-          </ul>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot gray"></div>
-          <div class="tl-year">1961</div>
-          <div class="tl-label">Das Foto wird weltbekannt — unter falschem Namen</div>
-          <ul class="tl-bullets">
-            <li>Eichmann-Prozess in Israel macht das Bild zur <strong>Holocaust-Ikone</strong></li>
-            <li>Falscher Titel: <em>„Der letzte Jude von Winnyzja"</em></li>
-            <li>Ort, Datum und Täter jahrzehntelang unbekannt</li>
-          </ul>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot green"></div>
-          <div class="tl-year">2023</div>
-          <div class="tl-label">Durchbruch: Tagebuch im Holocaust-Museum Washington</div>
-          <ul class="tl-bullets">
-            <li>Historiker <strong>Jürgen Matthäus</strong> findet Foto im Nachlass Walter Maternas</li>
-            <li>Rückseite: <strong>korrektes Datum + Tatort Berdytschiw</strong></li>
-            <li>Tagebuch liefert genaue Augenzeugen­beschreibung</li>
-          </ul>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot green"></div>
-          <div class="tl-year">2024</div>
-          <div class="tl-label">KI identifiziert Onnen — Wahrscheinlichkeit &gt; 99 %</div>
-          <ul class="tl-bullets">
-            <li>Pensionierter Lehrer meldet sich: Onkel Jakobus Onnen als Verdächtiger</li>
-            <li>Team aus Historikern, Kriminalisten, OSINT und <strong>KI-Gesichtserkennung</strong></li>
-            <li>Identifikation mit <strong>mehr als 99 % Wahrscheinlichkeit</strong></li>
-          </ul>
-        </div>
-
-      </div>
+<!-- ══ SLIDE 3 ══════════════════════════════════════ -->
+<section class="slide" id="s3" data-slide="3">
+  <div class="two-col slide-inner" style="max-width:680px">
+    <div>
+      <span class="tag">Das Verbrechen</span>
+      <h2 class="slide-heading" style="margin-bottom:1.5rem">
+        <span class="yr">28. Juli 1941</span>
+        Berdytschiw
+      </h2>
+      <ul class="bullets">
+        <li><span class="num">70</span> Erschossene an einem Tag</li>
+        <li>Name des Opfers — bis heute <strong>unbekannt</strong></li>
+        <li>Täter: „performative Indifferenz"</li>
+      </ul>
     </div>
-
-    <!-- TAB 1 -->
-    <div id="sec1" class="section">
-      <div class="slide-title">Wie KI den Durchbruch ermöglichte</div>
-      <div class="slide-sub">METHODEN &amp; AKTEURE</div>
-
-      <div class="stat-row">
-        <div class="stat-box">
-          <div class="stat-num">&gt; 99 %</div>
-          <div class="stat-lbl">Identifikations­wahrscheinlichkeit</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num">80+</div>
-          <div class="stat-lbl">Jahre nach der Tat</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num">4</div>
-          <div class="stat-lbl">Disziplinen im Team</div>
-        </div>
-      </div>
-
-      <div class="method-grid" id="methodGrid">
-        <div class="method-card">
-          <div class="method-icon"><i class="ti ti-scan"></i></div>
-          <div class="method-title">KI-Gesichtserkennung</div>
-          <ul class="method-list">
-            <li>Biometrischer Abgleich historischer Fotos</li>
-            <li>Unterschiedliche Bildqualität, Jahrzehnte Abstand</li>
-            <li>Ergebnis: &gt; 99 % Übereinstimmung</li>
-          </ul>
-        </div>
-        <div class="method-card">
-          <div class="method-icon"><i class="ti ti-search"></i></div>
-          <div class="method-title">OSINT-Recherche</div>
-          <ul class="method-list">
-            <li>Öffentlich zugängliche Archive</li>
-            <li>Digitalisierte Akten und Karteien</li>
-            <li>Genealogische Register</li>
-          </ul>
-        </div>
-        <div class="method-card">
-          <div class="method-icon"><i class="ti ti-file-text"></i></div>
-          <div class="method-title">Digitale Archivarbeit</div>
-          <ul class="method-list">
-            <li>Nachlass-Erschließung im USHMM</li>
-            <li>Kriegstagebuch als Schlüsselquelle</li>
-            <li>Foto mit Ortsangabe auf der Rückseite</li>
-          </ul>
-        </div>
-        <div class="method-card">
-          <div class="method-icon"><i class="ti ti-users"></i></div>
-          <div class="method-title">Interdisziplinäres Team</div>
-          <ul class="method-list">
-            <li>Historiker + Kriminalisten</li>
-            <li>OSINT-Spezialisten</li>
-            <li>KI als Werkzeug, nicht Ersatz</li>
-          </ul>
-        </div>
-      </div>
-
-      <div style="font-size:12px; font-weight:500; color:var(--text); margin:0.25rem 0 0.6rem;">Beteiligte Akteure</div>
-      <div class="actor-row">
-        <span class="actor-badge"><i class="ti ti-building" style="font-size:13px"></i> Jürgen Matthäus (Historiker)</span>
-        <span class="actor-badge"><i class="ti ti-building-bank" style="font-size:13px"></i> US Holocaust Memorial Museum</span>
-        <span class="actor-badge"><i class="ti ti-shield" style="font-size:13px"></i> Ehem. Kriminalbeamter</span>
-        <span class="actor-badge"><i class="ti ti-globe" style="font-size:13px"></i> OSINT-Rechercheure</span>
-        <span class="actor-badge"><i class="ti ti-cpu" style="font-size:13px"></i> KI-Gesichtserkennung</span>
-        <span class="actor-badge"><i class="ti ti-user" style="font-size:13px"></i> Pensionierter Lehrer (Hinweis)</span>
-      </div>
+    <div class="photo-small">
+      <img src="bild.jpg" alt="Historisches Foto"
+           onerror="this.parentElement.innerHTML='<div class=\'photo-small-placeholder\'><i class=\'ti ti-photo\'></i></div>'" />
     </div>
-
-    <!-- TAB 2 -->
-    <div id="sec2" class="section">
-      <div class="slide-title">Bedeutung für die Geschichtswissenschaft</div>
-      <div class="slide-sub">CHANCEN · GRENZEN · LEITFRAGE</div>
-
-      <div class="reflect-grid">
-        <div class="reflect-card">
-          <div class="reflect-q"><i class="ti ti-check-circle icon-green"></i> Neue Möglichkeiten</div>
-          <ul class="reflect-list">
-            <li>Visuelle Quellen massenweise auswertbar</li>
-            <li>Digitalisierte Archive vollständig erschließbar</li>
-            <li>Kaltfälle des 20. Jh. neu aufrollbar</li>
-          </ul>
-        </div>
-        <div class="reflect-card">
-          <div class="reflect-q"><i class="ti ti-check-circle icon-green"></i> Gerechtigkeit &amp; Erinnerung</div>
-          <ul class="reflect-list">
-            <li>Täter posthum namentlich benennbar</li>
-            <li>Opfer identifizierbar, deren Namen gelöscht wurden</li>
-            <li>Historische Rechenschaft auch ohne Strafverfolgung</li>
-          </ul>
-        </div>
-        <div class="reflect-card">
-          <div class="reflect-q"><i class="ti ti-alert-triangle icon-amber"></i> Methodische Fragen</div>
-          <ul class="reflect-list">
-            <li>Verlässlichkeit bei hist. S/W-Fotos?</li>
-            <li>Welche Fehlerquoten sind akzeptabel?</li>
-            <li>Wer kontrolliert die Algorithmen?</li>
-          </ul>
-        </div>
-        <div class="reflect-card">
-          <div class="reflect-q"><i class="ti ti-alert-triangle icon-amber"></i> Ethische Grenzen</div>
-          <ul class="reflect-list">
-            <li>Falschidentifikation = schwere Konsequenzen</li>
-            <li>Strenge Verfahren für KI + historisches Urteil</li>
-            <li>Schutz von Familien und Nachkommen</li>
-          </ul>
-        </div>
-        <div class="reflect-card" style="grid-column:1/-1;">
-          <div class="reflect-q"><i class="ti ti-info-circle icon-blue"></i> Der Mensch bleibt zentral</div>
-          <ul class="reflect-list">
-            <li>Durchbruch kam durch <strong>menschliche Quellenarbeit</strong> — das Tagebuch, der Hinweis aus der Familie</li>
-            <li>KI als Werkzeug — nicht als Ersatz für historisches Kontextwissen</li>
-            <li><strong>KI verstärkt die Geschichtswissenschaft. Sie ersetzt sie nicht.</strong></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="leitfrage">
-        <div class="leitfrage-label">Leitfrage des Vortrags</div>
-        <p>Wie verändert KI die Bedingungen historischer Wahrheitsfindung — und welche Verantwortung entsteht daraus für Forschende?</p>
-      </div>
-    </div>
-
-  </div><!-- /slide-area -->
-
-  <div id="footer">
-    <button id="btnPrev" onclick="navigate(-1)"><i class="ti ti-arrow-left"></i> Zurück</button>
-    <div class="dots">
-      <div class="dot active" onclick="showTab(0)"></div>
-      <div class="dot" onclick="showTab(1)"></div>
-      <div class="dot" onclick="showTab(2)"></div>
-    </div>
-    <button id="btnNext" onclick="navigate(1)">Weiter <i class="ti ti-arrow-right"></i></button>
   </div>
-</div>
+</section>
+
+<!-- ══ SLIDE 4 ══════════════════════════════════════ -->
+<section class="slide" id="s4" data-slide="4">
+  <div class="slide-inner">
+    <span class="tag">Das Bild geht um die Welt</span>
+    <h2 class="slide-heading">
+      <span class="yr">1961</span>
+      Eichmann-Prozess
+    </h2>
+    <ul class="bullets">
+      <li>Weltweite Bekanntheit als <em>„Der letzte Jude von Winnyzja"</em></li>
+      <li>Falscher Titel · falscher Ort · Täter unbekannt</li>
+      <li>Wird zur <strong>Ikone des Holocaust</strong></li>
+    </ul>
+    <div class="pull-quote">
+      <p>80 Jahre lang wusste niemand: wer, wo, wann — genau.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SLIDE 5 ══════════════════════════════════════ -->
+<section class="slide" id="s5" data-slide="5">
+  <div class="slide-inner">
+    <span class="tag">Der Durchbruch</span>
+    <h2 class="slide-heading">
+      <span class="yr">2023</span>
+      Ein Tagebuch in Washington
+    </h2>
+    <ul class="bullets">
+      <li>Nachlass Soldat Walter Materna · <strong>Holocaust-Museum Washington</strong></li>
+      <li>Foto mit Ortsangabe auf der Rückseite: <em>Berdytschiw</em></li>
+      <li>Historiker Jürgen Matthäus rekonstruiert den Tatort</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ SLIDE 6 ══════════════════════════════════════ -->
+<section class="slide" id="s6" data-slide="6">
+  <div class="slide-inner">
+    <span class="tag">KI als Werkzeug</span>
+    <div class="big-stat">&gt; 99 %</div>
+    <div class="big-stat-label">Identifikationswahrscheinlichkeit · Jakobus Onnen · 2024</div>
+    <div class="ki-grid">
+      <div class="ki-cell">
+        <i class="ti ti-scan"></i>
+        <div>
+          <div class="ki-cell-label">Gesichtserkennung</div>
+          <div class="ki-cell-sub">Historische Fotos, 80 Jahre Abstand</div>
+        </div>
+      </div>
+      <div class="ki-cell">
+        <i class="ti ti-search"></i>
+        <div>
+          <div class="ki-cell-label">OSINT</div>
+          <div class="ki-cell-sub">Öffentliche Archive & Register</div>
+        </div>
+      </div>
+      <div class="ki-cell">
+        <i class="ti ti-file-text"></i>
+        <div>
+          <div class="ki-cell-label">Digitale Archivarbeit</div>
+          <div class="ki-cell-sub">Nachlässe, Digitalisierung</div>
+        </div>
+      </div>
+      <div class="ki-cell">
+        <i class="ti ti-users"></i>
+        <div>
+          <div class="ki-cell-label">Interdisziplinäres Team</div>
+          <div class="ki-cell-sub">Historik · Kriminalistik · KI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SLIDE 7 ══════════════════════════════════════ -->
+<section class="slide" id="s7" data-slide="7">
+  <div class="slide-inner">
+    <span class="tag">Leitfrage</span>
+    <p class="leitfrage-q">
+      Wie verändert KI die Bedingungen<br>
+      <em>historischer Wahrheitsfindung</em> —<br>
+      und welche Verantwortung<br>entsteht daraus?
+    </p>
+    <p class="leitfrage-sub">
+      KI ersetzt die Geschichtswissenschaft nicht.<br>
+      Sie <strong>verstärkt</strong> sie.
+    </p>
+  </div>
+</section>
 
 <script>
-  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+  const hint = document.getElementById('scrollHint');
+  const total = slides.length;
 
-  function dismissIntro() {
-    document.getElementById('intro').classList.add('hidden');
-    document.getElementById('app').classList.add('visible');
-    document.getElementById('header').classList.add('visible');
-    setTimeout(animateSection, 550);
-  }
-
-  function showTab(i) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-    document.getElementById('sec' + i).classList.add('active');
-    document.getElementById('tab' + i).classList.add('active');
-    document.querySelectorAll('.dot')[i].classList.add('active');
-    document.getElementById('slide-counter').textContent = (i + 1) + ' / 3';
-    document.getElementById('btnPrev').style.visibility = i === 0 ? 'hidden' : 'visible';
-    document.getElementById('btnNext').style.visibility = i === 2 ? 'hidden' : 'visible';
-    document.getElementById('slide-area').scrollTop = 0;
-    current = i;
-    setTimeout(animateSection, 60);
-  }
-
-  function navigate(dir) {
-    const n = current + dir;
-    if (n >= 0 && n <= 2) showTab(n);
-  }
-
-  function animateSection() {
-    document.querySelectorAll('.section.active .tl-item, .section.active .method-card').forEach((el, i) => {
-      setTimeout(() => el.classList.add('vis'), i * 70);
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const n = e.target.dataset.slide;
+        counter.textContent = n + ' / ' + total;
+        hint.classList.toggle('hidden', n > 1);
+      }
     });
-  }
+  }, { threshold: 0.6 });
 
-  document.getElementById('btnPrev').style.visibility = 'hidden';
+  slides.forEach(s => obs.observe(s));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      const visible = [...slides].find(s => s.getBoundingClientRect().top >= -10);
+      const next = visible?.nextElementSibling;
+      if (next?.classList.contains('slide')) next.scrollIntoView({ behavior: 'smooth' });
+    }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      const visible = [...slides].find(s => s.getBoundingClientRect().top >= -10);
+      const prev = visible?.previousElementSibling;
+      if (prev?.classList.contains('slide')) prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
 </script>
 </body>
 </html>
