@@ -200,15 +200,16 @@
       font-size: clamp(15px, 1.8vw, 19px);
       color: var(--ink);
       line-height: 1.45;
-      display: flex;
-      align-items: baseline;
-      gap: 0.75rem;
+      padding-left: 1.4rem;
+      position: relative;
     }
     .bullets li::before {
       content: '—';
       color: var(--faint);
-      flex-shrink: 0;
       font-size: 0.9em;
+      position: absolute;
+      left: 0;
+      top: 0.05em;
     }
     .bullets strong { font-weight: 500; }
     .bullets .num {
